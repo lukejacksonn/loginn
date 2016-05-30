@@ -1,8 +1,12 @@
 const aws = require('aws-sdk');
-aws.config.update({ region: 'eu-west-1' });
+aws.config.region = 'eu-west-1';
 const dynamo = new aws.DynamoDB.DocumentClient({ region: 'eu-west-1' });
+aws.config.region = 'us-east-1';
+const cognito = new aws.CognitoIdentity();
+const settings = require('./settings.json');
 
-exports.handle = function (event, context) {
+
+exports.handle = function handler(event, context) {
   if (!event.username && !event.email) {
     context.fail('Bad Request: Missing username/email parameter in request.');
     return;
@@ -15,16 +19,22 @@ exports.handle = function (event, context) {
 
   const filter = event.username ? 'username = :val' : 'email = :val';
   const value = event.username || event.email;
-  const params = {
+  const userParams = {
     TableName: 'users',
-    FilterExpression: filter,
+    KeyConditionExpression: filter,
     ExpressionAttributeValues: {
       ':val': value,
     },
   };
+  const tokenParams = {
+    IdentityId: settings.IdentityId,
+    IdentityPoolId: settings.identityPoolId,
+    Logins: {
+      'login.loginns': event.username,
+    },
+  };
 
-  dynamo.scan(params, function(err, data) {
-    context.succeed({'err': err, 'data': data});
+  dynamo.query(userParams, (err, data) => {
     if (err) {
       context.fail('Internal Error: Failed to find user.');
     }
@@ -32,9 +42,16 @@ exports.handle = function (event, context) {
       context.fail('Not Found: Failed to find user.');
     }
     // Check password
-    if (data.Item[0].password === event.password) {
-      context.succeed('Success: User exists');
+    if (data.Items[0].password === event.password) {
+      cognito.getOpenIdTokenForDeveloperIdentity(tokenParams, (tokenErr, tokenData) => {
+        if (tokenErr) {
+          context.fail('Internal Error: Failed to get open ID token');
+        }
+        context.succeed({
+          identity_id: tokenData.IdentityId,
+          token: tokenData.Token,
+        });
+      });
     }
-    context.succeed(data);
   });
 };
