@@ -6,10 +6,8 @@
  * @deploy: apex deploy
  */
 const aws = require('aws-sdk');
-aws.config.update({ region: 'eu-west-1' });
+aws.config.region = 'eu-west-1';
 const dynamo = new aws.DynamoDB.DocumentClient({ region: 'eu-west-1' });
-// Latest cognito must be configured in Virginia.
-aws.config.region = 'us-east-1';
 const cognito = new aws.CognitoIdentity();
 const settings = require('./settings.json');
 const bcrypt = require('bcrypt');
@@ -67,6 +65,7 @@ exports.handle = function handler(event, context) {
   cognito.getOpenIdTokenForDeveloperIdentity(tokenParams, (tokenErr, tokenData) => {
     if (tokenErr) {
       context.fail('Internal Error: Failed to add cognito identity');
+      return;
     }
     /*
      * Add new user data to DynamoDB.
@@ -74,6 +73,7 @@ exports.handle = function handler(event, context) {
     dynamo.put(userParams, (err) => {
       if (err) {
         context.fail('Internal Error: Failed to add user.');
+        return;
       }
       context.succeed({
         username: event.username,
