@@ -1,14 +1,26 @@
+/*
+ * Loginn Authenticate
+ * Find username in DynamoDB, validate password, and
+ * return cognito credentials for jwt.
+ * Note: Build external node modules with
+ */
 const aws = require('aws-sdk');
 aws.config.region = 'eu-west-1';
 const dynamo = new aws.DynamoDB.DocumentClient({ region: 'eu-west-1' });
+// Latest cognito must be configured in Virginia.
 aws.config.region = 'us-east-1';
 const cognito = new aws.CognitoIdentity();
 const settings = require('./settings.json');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 
-exports.handle = function handler(event, context) {
-  if (!event.username && !event.email) {
-    context.fail('Bad Request: Missing username/email parameter in request.');
+exports.handle = function newOne(event, context) {
+  /*
+   * Check required request parameters.
+   */
+  if (!event.username) {
+    context.fail('Bad Request: Missing username parameter in request.');
     return;
   }
 
@@ -17,32 +29,37 @@ exports.handle = function handler(event, context) {
     return;
   }
 
-  const filter = event.username ? 'username = :val' : 'email = :val';
-  const value = event.username || event.email;
   const userParams = {
     TableName: 'users',
-    KeyConditionExpression: filter,
+    KeyConditionExpression: 'username = :val',
     ExpressionAttributeValues: {
-      ':val': value,
+      ':val': event.username,
     },
   };
+  /*
+   * Parameters to get identity from cognito, if one
+   * doesn't exist, one is created for this user in the
+   * loginss identity pool.
+   */
   const tokenParams = {
-    IdentityId: settings.IdentityId,
     IdentityPoolId: settings.identityPoolId,
     Logins: {
       'login.loginns': event.username,
     },
   };
+  // Hash the received password to validate
+  const hash = bcrypt.hashSync(event.password, saltRounds);
 
   dynamo.query(userParams, (err, data) => {
     if (err) {
       context.fail('Internal Error: Failed to find user.');
     }
+    // No entries found in DynamoDB for user.
     if (data.Count === 0) {
       context.fail('Not Found: Failed to find user.');
     }
-    // Check password
-    if (data.Items[0].password === event.password) {
+    // Check password and return cognito identity.
+    if (bcrypt.compareSync(data.Items[0].password, hash)) {
       cognito.getOpenIdTokenForDeveloperIdentity(tokenParams, (tokenErr, tokenData) => {
         if (tokenErr) {
           context.fail('Internal Error: Failed to get open ID token');

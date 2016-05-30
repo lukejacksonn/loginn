@@ -1,11 +1,25 @@
+/*
+ * Loginn Register
+ * Add user to DynamoDB,and generate a cognito Id
+ * for that user.
+ * @build: build external node modules with
+ * @deploy: apex deploy
+ */
 const aws = require('aws-sdk');
 aws.config.update({ region: 'eu-west-1' });
 const dynamo = new aws.DynamoDB.DocumentClient({ region: 'eu-west-1' });
+// Latest cognito must be configured in Virginia.
 aws.config.region = 'us-east-1';
 const cognito = new aws.CognitoIdentity();
 const settings = require('./settings.json');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 
 exports.handle = function handler(event, context) {
+  /*
+   * Check required request parameters.
+   */
   if (!event.username) {
     context.fail('Bad Request: Missing username parameter in request.');
     return;
@@ -25,16 +39,24 @@ exports.handle = function handler(event, context) {
     context.fail('Bad Request: Missing service parameter in request.');
     return;
   }
-
+  // Hash the received password to store in DynamoDB.
+  const hash = bcrypt.hashSync(event.password, saltRounds);
+  /*
+   * Parameters for adding data to users table in DynamoDB.
+   */
   const userParams = {
     TableName: 'users',
     Item: {
       username: event.username,
-      password: event.password,
+      password: hash,
       email: event.email,
       service: event.service,
     },
   };
+  /*
+   * Parameters for creating identity in cognito identity pool loginns.
+   * If IdentityId is null, then one is created.
+   */
   const tokenParams = {
     IdentityId: null,
     IdentityPoolId: settings.identityPoolId,
@@ -46,6 +68,9 @@ exports.handle = function handler(event, context) {
     if (tokenErr) {
       context.fail('Internal Error: Failed to add cognito identity');
     }
+    /*
+     * Add new user data to DynamoDB.
+     */
     dynamo.put(userParams, (err) => {
       if (err) {
         context.fail('Internal Error: Failed to add user.');

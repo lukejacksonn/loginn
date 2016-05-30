@@ -1,0 +1,9 @@
+{
+  "name": "register",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "devDependencies": {
+    "bcrypt": "^0.8.6"
+  }
+}

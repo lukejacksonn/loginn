@@ -1,0 +1,29 @@
+{
+  "name": "loginn",
+  "version": "1.0.0",
+  "description": "A set of lambda functions and frontend components to aid authentication",
+  "main": "index.js",
+  "dependencies": {
+    "eslint": "^2.11.0",
+    "aws-sdk": "^2.3.16",
+    "eslint-config-airbnb": "^9.0.1",
+    "eslint-plugin-import": "^1.8.1",
+    "eslint-plugin-jsx-a11y": "^1.2.2",
+    "eslint-plugin-react": "^5.1.1",
+    "lambda-packager": "^0.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lukejacksonn/loginn.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lukejacksonn/loginn/issues"
+  },
+  "homepage": "https://github.com/lukejacksonn/loginn#readme"
+}

@@ -2,8 +2,6 @@
 {
   "name": "loginn",
   "description": "Modular Logins",
-  "memory": 128,
-  "timeout": 5,
   "role": "LambdaExecution",
 	"defaultEnvironment": "dev",
   "environment": {}
