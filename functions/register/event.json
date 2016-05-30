@@ -1,0 +1,6 @@
+{
+  "username": "joebloggs",
+  "email": "joebloggs@gmail.com",
+  "password": "salted_hash",
+  "service": "https://somesite.com"
+}

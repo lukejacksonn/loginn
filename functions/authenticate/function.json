@@ -1,0 +1,8 @@
+{
+  "name": "authenticate",
+  "description": "Authenticate a user and return cognito credentials",
+  "runtime": "nodejs",
+  "memory": 128,
+  "timeout": 3,
+  "role": "arn:aws:iam::188428953446:role/LambdaExecution"
+}
