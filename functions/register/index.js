@@ -1,8 +1,23 @@
 /*
- * Loginn Register
- * Add user to DynamoDB,and generate a cognito Id
- * for that user.
- * @build: build external node modules with
+ * Register User
+ *
+ * Add user to DynamoDB, and generate a cognito id.
+ *
+ * @url: https://7ibd5w7y69.execute-api.eu-west-1.amazonaws.com/beta
+ * @resource: /register
+ * @method: POST
+ * @params:
+ *      - username: username to register [string]
+ *      - password: raw password data to hash [string]
+ *      - email: email address of user [string]
+ *      - service: service to register user [string]
+ * @returns:
+ *      - username: username to register [string]
+ *      - email: email address of user [string]
+ *      - service: service to register user [string]
+ *      - identityId: cognito identity id [string]
+ *      - token: cognito token for jwt [string]
+ *
  * @deploy: apex deploy
  */
 const aws = require('aws-sdk');

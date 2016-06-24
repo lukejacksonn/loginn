@@ -1,4 +1,5 @@
 {
   "username": "joebloggs",
-  "password": "salted_hash"
+  "password": "salted_hash",
+  "service": "https://somesite.com"
 }

@@ -1,8 +1,19 @@
 /*
- * Loginn Authenticate
+ * Authenticate User
+ *
  * Find username in DynamoDB, validate password, and
- * return cognito credentials for jwt.
- * Note: Build external node modules with
+ * return cognito credentials for jwt authentication.
+ *
+ * @url: https://7ibd5w7y69.execute-api.eu-west-1.amazonaws.com/beta
+ * @resource: /authenticate
+ * @method: POST
+ * @params:
+ *      - username/email: username or email to authenticate [string]
+ *      - password: raw password data to validate [string]
+ *      - service: service name to authenticate [string]
+ * @returns:
+ *      - identity_id: cognito identity id [string]
+ *      - token: authentication token [string]
  */
 const aws = require('aws-sdk');
 aws.config.region = 'eu-west-1';
@@ -13,9 +24,6 @@ const bcrypt = require('bcrypt');
 
 
 exports.handle = function newOne(event, context) {
-  /*
-   * Check required request parameters.
-   */
   if (!event.username && !event.email) {
     context.fail('Bad Request: Missing username/email parameter in request.');
     return;
@@ -78,7 +86,7 @@ exports.handle = function newOne(event, context) {
         });
       });
     } else {
-      context.fail('Bad Request: Incorrect password.');
+      context.fail('Unprocessable Entity: Incorrect password.');
       return;
     }
   });

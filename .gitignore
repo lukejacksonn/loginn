@@ -35,3 +35,6 @@ node_modules
 
 # Remove settings
 functions/*/settings.json
+
+# OSX files
+.DS_Store
