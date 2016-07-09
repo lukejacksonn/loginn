@@ -1,6 +1,6 @@
 {
-  "username": "joebloggs",
-  "email": "joebloggs@gmail.com",
-  "password": "salted_hash",
-  "service": "https://somesite.com"
+  "username": "newuser",
+  "email": "joextodd@gmail.com",
+  "password": "testing",
+  "service": "http://github.com"
 }

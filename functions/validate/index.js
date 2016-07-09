@@ -1,11 +1,11 @@
 /*
- * Validate
+ * Validate Token
  *
- * Verifies that a user is still authenticated. Tokens expire
+ * Checks that a user is still authenticated. Tokens expire
  * every 15 minutes, so authenticate should be called to update.
  *
- * @url: https://f7mlijh134.execute-api.eu-west-1.amazonaws.com/beta
- * @resource: /validate
+ * @url: https://7ibd5w7y69.execute-api.eu-west-1.amazonaws.com/beta
+ * @resource: /validate/{username}/{token}
  * @method: POST
  * @params:
  *      - username [string]
@@ -42,7 +42,7 @@ exports.handle = function handler(event, context) {
     },
   };
   /*
-   * Query entries in browses table for browsers browses.
+   * Query user table to check user is registered for service.
    */
   dynamo.query(userParams, (userErr, userData) => {
     if (userErr) {

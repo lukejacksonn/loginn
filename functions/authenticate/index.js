@@ -22,7 +22,7 @@ const settings = require('./settings.json');
 const bcrypt = require('bcrypt');
 
 
-exports.handle = function newOne(event, context) {
+exports.handle = function handler(event, context) {
   if (!event.username && !event.email) {
     context.fail('Bad Request: Missing username/email parameter in request.');
     return;
