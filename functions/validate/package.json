@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "cd ../../ && apex invoke validate < functions/validate/event.json && cd functions/validate"
+    "test": "cd ../../ && apex invoke validate < functions/validate/event.json && cd functions/validate",
+    "deploy": "cd ../../ && apex deploy && cd functions/validate"
   },
   "dependencies": {
     "jsonwebtoken": "^7.0.1"

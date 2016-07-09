@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "scripts": {
+    "test": "cd ../../ && apex invoke authenticate < functions/authenticate/event.json && cd functions/authenticate",
+    "deploy": "cd ../../ && apex deploy && cd functions/authenticate"
+  },
   "dependencies": {
     "bcrypt": "^0.8.6"
   }

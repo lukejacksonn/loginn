@@ -3,7 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "scripts": {
+    "test": "cd ../../ && apex invoke register < functions/register/event.json && cd functions/register",
+    "deploy": "cd ../../ && apex deploy && cd functions/register"
+  },
   "dependencies": {
-    "bcrypt": "^0.8.6"
+    "bcrypt": "^0.8.6",
+    "crypto": "0.0.3"
   }
 }
