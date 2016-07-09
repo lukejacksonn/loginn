@@ -12,7 +12,6 @@
  *      - password: raw password data to validate [string]
  *      - service: service name to authenticate [string]
  * @returns:
- *      - identity_id: cognito identity id [string]
  *      - token: authentication token [string]
  */
 const aws = require('aws-sdk');
@@ -81,7 +80,6 @@ exports.handle = function newOne(event, context) {
           return;
         }
         context.succeed({
-          identity_id: tokenData.IdentityId,
           token: tokenData.Token,
         });
       });

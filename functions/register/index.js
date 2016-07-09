@@ -15,7 +15,6 @@
  *      - username: username to register [string]
  *      - email: email address of user [string]
  *      - service: service to register user [string]
- *      - identityId: cognito identity id [string]
  *      - token: cognito token for jwt [string]
  *
  * @deploy: apex deploy
@@ -52,6 +51,10 @@ exports.handle = function handler(event, context) {
     context.fail('Bad Request: Missing service parameter in request.');
     return;
   }
+  /*
+   * ToDo: Check user doesn't exist first.
+   */
+
   // Hash the received password to store in DynamoDB.
   const hash = bcrypt.hashSync(event.password, saltRounds);
   /*
@@ -94,7 +97,6 @@ exports.handle = function handler(event, context) {
         username: event.username,
         email: event.email,
         service: event.service,
-        identityId: tokenData.IdentityId,
         token: tokenData.Token,
       });
     });
