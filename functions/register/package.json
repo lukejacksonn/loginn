@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "devDependencies": {
+  "dependencies": {
     "bcrypt": "^0.8.6"
   }
 }

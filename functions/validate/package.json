@@ -1,0 +1,12 @@
+{
+  "name": "validate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "cd ../../ && apex invoke validate < functions/validate/event.json && cd functions/validate"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^7.0.1"
+  }
+}
