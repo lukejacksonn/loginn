@@ -1,0 +1,13 @@
+{
+  "name": "deleteUser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "cd ../../ && apex invoke deleteUser < functions/deleteUser/event.json && cd functions/deleteUser",
+    "deploy": "cd ../../ && apex deploy && cd functions/deleteUser"
+  },
+  "dependencies": {
+    "bcrypt": "^0.8.6"
+  }
+}
