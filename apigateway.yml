@@ -839,6 +839,9 @@ definitions:
         description: The website to be authenticated
   AuthenticateUserResponse:
     properties:
+      username:
+        type: string
+        description: Authenticated username
       token:
         type: string
         description: Authenticated JWT for 15 mins
@@ -885,6 +888,9 @@ definitions:
       token:
         type: string
         description: JWT to validate
+      service:
+        type: string
+        description: The website to validate
   ValidateUserResponse:
     properties:
       username:

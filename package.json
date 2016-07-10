@@ -12,10 +12,15 @@
     "eslint-plugin-react": "^5.1.1",
     "lambda-packager": "^0.2.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "mocha": "^2.5.3",
+    "should": "^9.0.2",
+    "sleep": "^3.0.1",
+    "supertest": "^1.2.0"
+  },
   "scripts": {
     "deploy": "cd ~/Developer/aws/aws-apigateway-importer && ./aws-api-import.sh --update 7ibd5w7y69 --deploy beta ~/Developer/aws/lambda/loginn/apigateway.yml && cd -",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/mocha/bin/mocha apitests.js --timeout 30000"
   },
   "repository": {
     "type": "git",

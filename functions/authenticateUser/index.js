@@ -12,6 +12,7 @@
  *      - password: raw password data to validate [string]
  *      - service: service name to authenticate [string]
  * @returns:
+ *      - username: authenticated user [string]
  *      - token: authentication token [string]
  */
 const aws = require('aws-sdk');
