@@ -1,0 +1,13 @@
+{
+  "name": "changePassword",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "cd ../../ && apex invoke changePassword < functions/changePassword/event.json && cd functions/changePassword",
+    "deploy": "cd ../../ && apex deploy && cd functions/changePassword"
+  },
+  "dependencies": {
+    "bcrypt": "^0.8.6"
+  }
+}

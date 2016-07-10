@@ -1,0 +1,795 @@
+---
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: Loginn
+  description: A set of API gateway definitions to aid authentication
+host: execute-api.eu-west-1.amazonaws.com
+basePath: "/"
+schemes:
+  - "https"
+produces:
+  - application/json
+paths:
+  /authenticate:
+    post:
+      summary: Authenticate User
+      description: |
+        Verifies password against stored hash then returns JWT.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: AuthenticateUser
+          in: body
+          description: User details.
+          schema:
+            $ref: '#/definitions/AuthenticateUser'
+      x-amazon-apigateway-auth:
+        type: none
+      x-amazon-apigateway-integration:
+        type: aws
+        uri: arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-1:188428953446:function:loginn_authenticateUser/invocations
+        httpMethod: POST
+        responses:
+          "default":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "Bad Request: .*":
+            statusCode: "400"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "Not Found: .*":
+            statusCode: "404"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "Unprocessable Entity: .*":
+            statusCode: "422"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "Internal Error: .*":
+            statusCode: "500"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/AuthenticateUserResponse"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+        400:
+          description: "Bad Request"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "Not Found"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: "#/definitions/Error"
+        422:
+          description: "Unprocessable Entity"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Internal Error"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: "#/definitions/Error"
+    options:
+      summary: CORS support
+      description: |
+        Enable CORS by returning correct headers
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - CORS
+      x-amazon-apigateway-auth:
+        type: none
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {
+              "statusCode" : 200
+            }
+        responses:
+          "default":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              method.response.header.Access-Control-Allow-Methods: "'*'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            responseTemplates:
+              application/json: |
+                {}
+      responses:
+        200:
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Headers:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Origin:
+              type: "string"
+  /password/change:
+    post:
+      summary: Change Password
+      description: |
+        Verifies the password token is valid and updates password in database.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: ChangePassword
+          in: body
+          description: New password details.
+          schema:
+            $ref: '#/definitions/ChangePassword'
+      x-amazon-apigateway-auth:
+        type: none
+      x-amazon-apigateway-integration:
+        type: aws
+        uri: arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-1:188428953446:function:loginn_changePassword/invocations
+        httpMethod: POST
+        responses:
+          "default":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "Bad Request: .*":
+            statusCode: "400"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "Unprocessable Entity: .*":
+            statusCode: "422"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "Internal Error: .*":
+            statusCode: "500"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+      responses:
+        200:
+          description: "The username and service password was changed for"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: '#/definitions/ChangePasswordResponse'
+        422:
+          description: "Unprocessable Entity"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: "#/definitions/Error"
+        400:
+          description: "Bad Request"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Internal Error"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: "#/definitions/Error"
+    options:
+      summary: CORS support
+      description: |
+        Enable CORS by returning correct headers
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - CORS
+      x-amazon-apigateway-auth:
+        type: none
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {
+              "statusCode" : 200
+            }
+        responses:
+          "default":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              method.response.header.Access-Control-Allow-Methods: "'*'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            responseTemplates:
+              application/json: |
+                {}
+      responses:
+        200:
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Headers:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Origin:
+              type: "string"
+  /password/new:
+    post:
+      summary: New Password
+      description: |
+        Request an email to be sent out to user with token to change password.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: NewPassword
+          in: body
+          description: User details.
+          schema:
+            $ref: '#/definitions/NewPassword'
+      x-amazon-apigateway-auth:
+        type: none
+      x-amazon-apigateway-integration:
+        type: aws
+        uri: arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-1:188428953446:function:loginn_newPassword/invocations
+        httpMethod: POST
+        responses:
+          "default":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "Bad Request: .*":
+            statusCode: "400"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "Internal Error: .*":
+            statusCode: "500"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+      responses:
+        200:
+          description: "The username and service of password to be changed"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: '#/definitions/NewPasswordResponse'
+        422:
+          description: "Unprocessable Entity"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: "#/definitions/Error"
+        400:
+          description: "Bad Request"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Internal Error"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: "#/definitions/Error"
+    options:
+      summary: CORS support
+      description: |
+        Enable CORS by returning correct headers
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - CORS
+      x-amazon-apigateway-auth:
+        type: none
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {
+              "statusCode" : 200
+            }
+        responses:
+          "default":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              method.response.header.Access-Control-Allow-Methods: "'*'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            responseTemplates:
+              application/json: |
+                {}
+      responses:
+        200:
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Headers:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Origin:
+              type: "string"
+  /register:
+    post:
+      summary: Register User
+      description: |
+        Checks username doesn't already exist, then adds to database with
+        verification token, then sends out email to verify address.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: RegisterUser
+          in: body
+          description: New user details
+          schema:
+            $ref: '#/definitions/RegisterUser'
+      x-amazon-apigateway-auth:
+        type: none
+      x-amazon-apigateway-integration:
+        type: aws
+        uri: arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-1:188428953446:function:loginn_registerUser/invocations
+        httpMethod: POST
+        responses:
+          "default":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "Bad Request: .*":
+            statusCode: "400"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "Unprocessable Entity: .*":
+            statusCode: "422"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "Internal Error: .*":
+            statusCode: "500"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+      responses:
+        200:
+          description: "The username, email and service to be registerd"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: '#/definitions/RegisterUserResponse'
+        422:
+          description: "Unprocessable Entity"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: "#/definitions/Error"
+        400:
+          description: "Bad Request"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Internal Error"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: "#/definitions/Error"
+    options:
+      summary: CORS support
+      description: |
+        Enable CORS by returning correct headers
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - CORS
+      x-amazon-apigateway-auth:
+        type: none
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {
+              "statusCode" : 200
+            }
+        responses:
+          "default":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              method.response.header.Access-Control-Allow-Methods: "'*'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            responseTemplates:
+              application/json: |
+                {}
+      responses:
+        200:
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Headers:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Origin:
+              type: "string"
+  /validate:
+    post:
+      summary: Validate User
+      description: |
+        Checks that a token is still valid for accessing the service.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: ValidateUser
+          in: body
+          description: User and JWT
+          schema:
+            $ref: '#/definitions/ValidateUser'
+      x-amazon-apigateway-auth:
+        type: none
+      x-amazon-apigateway-integration:
+        type: aws
+        uri: arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-1:188428953446:function:loginn_validateUser/invocations
+        httpMethod: POST
+        responses:
+          "default":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "Bad Request: .*":
+            statusCode: "400"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "Unauthorized: .*":
+            statusCode: "401"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "Unprocessable Entity: .*":
+            statusCode: "422"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "Internal Error: .*":
+            statusCode: "500"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+      responses:
+        200:
+          description: "The username of validated user"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: '#/definitions/ValidateUserResponse'
+        400:
+          description: "Bad Request"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: "Unauthorized"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: "#/definitions/Error"
+        422:
+          description: "Unprocessable Entity"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Internal Error"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: "#/definitions/Error"
+    options:
+      summary: CORS support
+      description: |
+        Enable CORS by returning correct headers
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - CORS
+      x-amazon-apigateway-auth:
+        type: none
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {
+              "statusCode" : 200
+            }
+        responses:
+          "default":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              method.response.header.Access-Control-Allow-Methods: "'*'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            responseTemplates:
+              application/json: |
+                {}
+      responses:
+        200:
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Headers:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Origin:
+              type: "string"
+  /verify:
+    get:
+      summary: Verify Email
+      description: |
+        Confirms registration with token sent to email address, on success
+        issues a redirect to the service.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: "token"
+          in: "query"
+          required: true
+          type: "string"
+        - name: "username"
+          in: "query"
+          required: true
+          type: "string"
+      x-amazon-apigateway-auth:
+        type: none
+      x-amazon-apigateway-integration:
+        type: aws
+        uri: arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-1:188428953446:function:loginn_verifyEmail/invocations
+        httpMethod: POST
+        requestTemplates:
+          application/json: |
+            {
+              "username" : "$input.params('username')",
+              "token": "$input.params('token')"
+            }
+        responses:
+          "default":
+            statusCode: "303"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Location: integration.response.body.location
+          "Bad Request: .*":
+            statusCode: "400"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "Unprocessable Entity: .*":
+            statusCode: "422"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "Internal Error: .*":
+            statusCode: "500"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+      responses:
+        303:
+          description: "Redirect to service webpage"
+          headers:
+            Location:
+              type: "string"
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: '#/definitions/VerifyEmailResponse'
+        400:
+          description: "Bad Request"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: "#/definitions/Error"
+        422:
+          description: "Unprocessable Entity"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Internal Error"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: "#/definitions/Error"
+    options:
+      summary: CORS support
+      description: |
+        Enable CORS by returning correct headers
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - CORS
+      x-amazon-apigateway-auth:
+        type: none
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {
+              "statusCode" : 200
+            }
+        responses:
+          "default":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              method.response.header.Access-Control-Allow-Methods: "'*'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            responseTemplates:
+              application/json: |
+                {}
+      responses:
+        200:
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Headers:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Origin:
+              type: "string"
+definitions:
+  Empty:
+    type: "object"
+  RegisterUser:
+    properties:
+      username:
+        type: string
+        description: A unique username for the new user
+      password:
+        type: string
+        description: A password for the new user
+      email:
+        type: string
+        description: The email address of the new user
+      service:
+        type: string
+        description: The website to be registered
+  RegisterUserResponse:
+    properties:
+      username:
+        type: string
+        description: The registered username
+      password:
+        type: string
+        description: A password for the registered user
+      service:
+        type: string
+        description: The website to be registered
+  AuthenticateUser:
+    properties:
+      username:
+        type: string
+        description: A unique username for the user
+      password:
+        type: string
+        description: A password for the user
+      service:
+        type: string
+        description: The website to be authenticated
+  AuthenticateUserResponse:
+    properties:
+      token:
+        type: string
+        description: Authenticated JWT for 15 mins
+  ChangePassword:
+    properties:
+      username:
+        type: string
+        description: A unique username for the user
+      password:
+        type: string
+        description: A new password for the user
+      token:
+        type: string
+        description: A token to authenticate via email
+  ChangePasswordResponse:
+    properties:
+      username:
+        type: string
+        description: The username of the new user
+      service:
+        type: string
+        description: The website the password was changed for
+  NewPassword:
+    properties:
+      username:
+        type: string
+        description: A unique username for the user
+      service:
+        type: string
+        description: The website of password to be changed for
+  NewPasswordResponse:
+    properties:
+      username:
+        type: string
+        description: The username of the user
+      service:
+        type: string
+        description: The website of password to be changed
+  ValidateUser:
+    properties:
+      username:
+        type: string
+        description: A unique username for the user
+      token:
+        type: string
+        description: JWT to validate
+  ValidateUserResponse:
+    properties:
+      username:
+        type: string
+        description: Username for the validated user
+  VerifyEmail:
+    properties:
+      username:
+        type: string
+        description: A unique username for the user
+      token:
+        type: string
+        description: Verification token for registration
+  VerifyEmailResponse:
+    properties:
+      location:
+        type: string
+        description: Link to service webpage
+  Error:
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string

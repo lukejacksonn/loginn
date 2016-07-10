@@ -1,6 +1,6 @@
 {
-  "name": "validate",
-  "description": "Validate a users json web token",
+  "name": "verifyEmail",
+  "description": "Verify a registering users email address",
   "runtime": "nodejs4.3",
   "memory": 256,
   "timeout": 10,

@@ -1,0 +1,12 @@
+{
+  "name": "verifyEmail",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "cd ../../ && apex invoke verifyEmail < functions/verifyEmail/event.json && cd functions/verifyEmail",
+    "deploy": "cd ../../ && apex deploy && cd functions/verifyEmail"
+  },
+  "dependencies": {
+  }
+}

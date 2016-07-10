@@ -92,7 +92,7 @@ exports.handle = function handler(event, context) {
         password: hash,
         email: event.email,
         service: event.service,
-        validation: crypto.randomBytes(32).toString('hex'),
+        verificationToken: crypto.randomBytes(32).toString('hex'),
       },
     };
     dynamo.put(userParams, (userErr) => {
@@ -114,7 +114,9 @@ exports.handle = function handler(event, context) {
 <p>Thanks for registering to use ${event.service}.</p>
 <p>To complete registration you must verify your email address by clicking the link below.</p>
 
-<a href="${url}/verify/${event.username}/${userParams.Item.validation}">Verify Email Address</a>
+<a href="${url}/verify?username=${event.username}&token=${userParams.Item.verificationToken}">
+Verify Email Address
+</a>
 
 <p><small>Brought to you by Loginn</small></p>
               `,
@@ -122,7 +124,7 @@ exports.handle = function handler(event, context) {
             },
           },
           Subject: {
-            Data: `Verification for ${event.username}.`,
+            Data: `${event.service} Registration!`,
             Charset: 'UTF-8',
           },
         },
