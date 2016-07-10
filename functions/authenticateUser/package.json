@@ -1,0 +1,13 @@
+{
+  "name": "authenticateUser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "cd ../../ && apex invoke authenticateUser < functions/authenticateUser/event.json && cd functions/authenticateUser",
+    "deploy": "cd ../../ && apex deploy && cd functions/authenticateUser"
+  },
+  "dependencies": {
+    "bcrypt": "^0.8.6"
+  }
+}

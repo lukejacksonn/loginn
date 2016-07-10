@@ -1,0 +1,6 @@
+{
+  "username": "joebloggs",
+  "password": "salted_hash",
+  "service": "http://github.com",
+  "token": "783bd223d965bf44c9d990bc8f352a979550aeae4f3aa24dab869aea3cc647dc"
+}

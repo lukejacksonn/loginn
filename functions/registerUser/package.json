@@ -1,0 +1,14 @@
+{
+  "name": "registerUser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "cd ../../ && apex invoke registerUser < functions/registerUser/event.json && cd functions/registerUser",
+    "deploy": "cd ../../ && apex deploy && cd functions/registerUser"
+  },
+  "dependencies": {
+    "bcrypt": "^0.8.6",
+    "crypto": "0.0.3"
+  }
+}

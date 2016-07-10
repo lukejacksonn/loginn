@@ -5,11 +5,11 @@
  * then remove token from DynamoDB.
  *
  * @url: https://7ibd5w7y69.execute-api.eu-west-1.amazonaws.com/beta
- * @resource: /verify/{username}/{token}
+ * @resource: /verify
  * @method: GET
- * @params:
+ * @query:
  *      - username [string]
- *      - token: validation token [string]
+ *      - token: verification token [string]
  * @returns:
  *      - redirect to service
  */
@@ -30,7 +30,7 @@ exports.handle = function handler(event, context) {
     return;
   }
   /*
-   * Get validation token from DynamoDB.
+   * Get verificationToken token from DynamoDB.
    */
   const userParams = {
     TableName: 'users',
@@ -49,9 +49,9 @@ exports.handle = function handler(event, context) {
       return;
     }
     const tokens = userData.Items.filter(function (items) {
-      return items.validation;
+      return items.verificationToken;
     }).map(function (items) {
-      return items.validation;
+      return items.verificationToken;
     });
     /*
      * Check token matches that in one of the users
@@ -84,7 +84,7 @@ exports.handle = function handler(event, context) {
           service,
           username: event.username,
         },
-        UpdateExpression: 'REMOVE validation',
+        UpdateExpression: 'REMOVE verificationToken',
       };
       dynamo.update(updateParams, (updateErr) => {
         if (updateErr) {

@@ -1,5 +1,5 @@
 {
-  "name": "authenticate",
+  "name": "authenticateUser",
   "description": "Authenticate a user and return cognito credentials",
   "runtime": "nodejs4.3",
   "memory": 256,

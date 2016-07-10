@@ -1,5 +1,5 @@
 {
-  "name": "register",
+  "name": "registerUser",
   "description": "Register a new user and send verification email",
   "runtime": "nodejs4.3",
   "memory": 256,

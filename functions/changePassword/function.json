@@ -1,6 +1,6 @@
 {
-  "name": "verify",
-  "description": "Verify a registering users email address",
+  "name": "changePassword",
+  "description": "Change a users password with token validation",
   "runtime": "nodejs4.3",
   "memory": 256,
   "timeout": 10,

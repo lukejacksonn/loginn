@@ -1,0 +1,13 @@
+{
+  "name": "newPassword",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "cd ../../ && apex invoke newPassword < functions/newPassword/event.json && cd functions/newPassword",
+    "deploy": "cd ../../ && apex deploy && cd functions/newPassword"
+  },
+  "dependencies": {
+    "crypto": "0.0.3"
+  }
+}

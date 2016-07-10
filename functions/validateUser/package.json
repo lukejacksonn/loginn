@@ -1,0 +1,13 @@
+{
+  "name": "validateUser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "cd ../../ && apex invoke validateUser < functions/validateUser/event.json && cd functions/validateUser",
+    "deploy": "cd ../../ && apex deploy && cd functions/validateUser"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^7.0.1"
+  }
+}

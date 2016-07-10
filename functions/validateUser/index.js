@@ -1,11 +1,11 @@
 /*
- * Validate Token
+ * Validate User
  *
  * Checks that a user is still authenticated. Tokens expire
  * every 15 minutes, so authenticate should be called to update.
  *
  * @url: https://7ibd5w7y69.execute-api.eu-west-1.amazonaws.com/beta
- * @resource: /validate/{username}/{token}
+ * @resource: /validate
  * @method: POST
  * @params:
  *      - username [string]
