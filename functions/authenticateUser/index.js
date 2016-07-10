@@ -27,12 +27,10 @@ exports.handle = function handler(event, context) {
     context.fail('Bad Request: Missing username/email parameter in request.');
     return;
   }
-
   if (!event.password) {
     context.fail('Bad Request: Missing password parameter in request.');
     return;
   }
-
   if (!event.service) {
     context.fail('Bad Request: Missing service parameter in request.');
     return;
@@ -49,37 +47,47 @@ exports.handle = function handler(event, context) {
       ':srv': event.service,
     },
   };
-  /*
-   * Parameters to get identity from cognito, if one
-   * doesn't exist, one is created for this user in the
-   * loginss identity pool.
-   */
-  const tokenParams = {
-    IdentityPoolId: settings.identityPoolId,
-    Logins: {
-      'login.loginns': event.username || event.email,
-    },
-  };
 
-  dynamo.scan(userParams, (err, data) => {
-    if (err) {
+  dynamo.scan(userParams, (userErr, userData) => {
+    if (userErr) {
       context.fail('Internal Error: Failed to scan database.');
       return;
     }
     // No entries found in DynamoDB for user.
-    if (data.Count === 0) {
-      context.fail(`Not Found: No user registered for ${event.service}.`);
+    if (userData.Count === 0) {
+      context.fail('Not Found: User not registered');
       return;
     }
+    // Select entry corresponding to service.
+    const services = userData.Items.map(function(items) {
+      return items.service;
+    });
+    const idx = services.indexOf(event.service);
+    if (idx === -1) {
+      context.fail(`Not Found: No user registered for ${event.service}`);
+      return;
+    }
+    const username = userData.Items[idx].username;
     // Check password and return cognito identity.
-    // -- Use first result for now.
-    if (bcrypt.compareSync(event.password, data.Items[0].password)) {
+    if (bcrypt.compareSync(event.password, userData.Items[idx].password)) {
+      /*
+       * Parameters to get identity from cognito, if one
+       * doesn't exist, one is created for this user in the
+       * loginss identity pool.
+       */
+      const tokenParams = {
+        IdentityPoolId: settings.identityPoolId,
+        Logins: {
+          'login.loginns': username,
+        },
+      };
       cognito.getOpenIdTokenForDeveloperIdentity(tokenParams, (tokenErr, tokenData) => {
         if (tokenErr) {
           context.fail('Internal Error: Failed to get open ID token.');
           return;
         }
         context.succeed({
+          username,
           token: tokenData.Token,
         });
       });

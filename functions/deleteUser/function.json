@@ -1,0 +1,8 @@
+{
+  "name": "deleteUser",
+  "description": "Delete a user account associated with a service",
+  "runtime": "nodejs4.3",
+  "memory": 256,
+  "timeout": 10,
+  "role": "arn:aws:iam::188428953446:role/LambdaExecution"
+}
