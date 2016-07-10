@@ -10,6 +10,7 @@
  * @params:
  *      - username [string]
  *      - token: jwt token from cognito [string]
+ *      - service: website [string]
  * @returns:
  *      - username [string]
  */
