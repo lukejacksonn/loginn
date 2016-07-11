@@ -62,15 +62,18 @@ exports.handle = function handler(event, context) {
       context.fail('Unprocessable Entity: Invalid token.');
       return;
     }
-    const service = userData.Items[idx].service;
+    var service = userData.Items[idx].service;
+    const cognitoId = userData.Items[idx].cognitoId;
     /*
      * Parameters for creating identity in cognito identity pool loginns.
      * If IdentityId is null, then one is created.
+     * Add random string onto end of username to not conflict between same
+     * name registered under different services.
      */
     const tokenParams = {
       IdentityPoolId: settings.identityPoolId,
       Logins: {
-        'login.loginns': event.username,
+        'login.loginns': `${event.username}_${cognitoId}`,
       },
     };
     cognito.getOpenIdTokenForDeveloperIdentity(tokenParams, (tokenErr) => {
@@ -94,6 +97,9 @@ exports.handle = function handler(event, context) {
         /*
          * Redirect to service.
          */
+        if (!service.startsWith('http')) {
+          service = `http://${service}`;
+        }
         context.succeed({ location: service });
       });
     });

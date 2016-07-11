@@ -13,6 +13,7 @@
  *      - service: website [string]
  * @returns:
  *      - username [string]
+ *      - service: website [string]
  */
 const aws = require('aws-sdk');
 aws.config.region = 'eu-west-1';
@@ -54,9 +55,12 @@ exports.handle = function handler(event, context) {
       const services = userData.Items.map(function(items) {
         return items.service;
       });
-      if (services.indexOf(event.service) === -1) {
+      const idx = services.indexOf(event.service);
+      if (idx === -1) {
         context.fail(`Unprocessable Entity: User not registered for ${event.service}`);
+        return;
       }
+      const cognitoId = userData.Items[idx].cognitoId;
       /*
        * Check JWT for authentication.
        */
@@ -66,7 +70,7 @@ exports.handle = function handler(event, context) {
           decoded.hasOwnProperty('sub')) {
         const idParams = {
           IdentityPoolId: settings.identityPoolId,
-          DeveloperUserIdentifier: event.username,
+          DeveloperUserIdentifier: `${event.username}_${cognitoId}`,
           MaxResults: 1,
         };
         /*
@@ -91,7 +95,7 @@ exports.handle = function handler(event, context) {
             context.fail('Unauthorized: Token has expired.');
             return;
           }
-          context.succeed({ username: event.username });
+          context.succeed({ username: event.username, service: event.service });
         });
       } else {
         context.fail('Unprocessable Entity: Failed to parse token.');

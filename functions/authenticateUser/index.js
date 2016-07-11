@@ -10,9 +10,10 @@
  * @params:
  *      - username/email: username or email to authenticate [string]
  *      - password: raw password data to validate [string]
- *      - service: service name to authenticate [string]
+ *      - service: website to authenticate [string]
  * @returns:
  *      - username: authenticated user [string]
+ *      - service: website to authenticate [string]
  *      - token: authentication token [string]
  */
 const aws = require('aws-sdk');
@@ -68,7 +69,12 @@ exports.handle = function handler(event, context) {
       context.fail(`Not Found: No user registered for ${event.service}`);
       return;
     }
+    if (userData.Items[idx].hasOwnProperty('verificationToken')) {
+      context.fail('Unauthorized: user has not completed email verification');
+      return;
+    }
     const username = userData.Items[idx].username;
+    const cognitoId = userData.Items[idx].cognitoId;
     // Check password and return cognito identity.
     if (bcrypt.compareSync(event.password, userData.Items[idx].password)) {
       /*
@@ -79,7 +85,7 @@ exports.handle = function handler(event, context) {
       const tokenParams = {
         IdentityPoolId: settings.identityPoolId,
         Logins: {
-          'login.loginns': username,
+          'login.loginns': `${username}_${cognitoId}`,
         },
       };
       cognito.getOpenIdTokenForDeveloperIdentity(tokenParams, (tokenErr, tokenData) => {
@@ -90,6 +96,7 @@ exports.handle = function handler(event, context) {
         context.succeed({
           username,
           token: tokenData.Token,
+          service: event.service,
         });
       });
     } else {
