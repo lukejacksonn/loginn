@@ -62,9 +62,10 @@ exports.handle = function handler(event, context) {
    */
   const existParams = {
     TableName: 'users',
-    KeyConditionExpression: 'username = :usr',
+    KeyConditionExpression: 'username = :usr AND service = :srv',
     ExpressionAttributeValues: {
       ':usr': event.username,
+      ':srv': event.service,
     },
   };
   dynamo.query(existParams, (existErr, existData) => {
@@ -92,6 +93,7 @@ exports.handle = function handler(event, context) {
         password: hash,
         email: event.email,
         service: event.service,
+        cognitoId: Math.random().toString(36).substr(2, 7),
         verificationToken: crypto.randomBytes(32).toString('hex'),
       },
     };

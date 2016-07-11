@@ -70,6 +70,7 @@ exports.handle = function handler(event, context) {
       return;
     }
     const username = userData.Items[idx].username;
+    const cognitoId = userData.Items[idx].cognitoId;
     // Check password
     if (bcrypt.compareSync(event.password, userData.Items[idx].password)) {
       const delParams = {
@@ -84,40 +85,32 @@ exports.handle = function handler(event, context) {
           context.fail('Internal Error: Failed to delete user from database.');
           return;
         }
-        if (userData.Count === 1) {
-          // Only registered for this service so we can remove the
-          // identity from cognito pool.
-          const tokenParams = {
-            IdentityPoolId: settings.identityPoolId,
-            Logins: {
-              'login.loginns': username,
-            },
+        const tokenParams = {
+          IdentityPoolId: settings.identityPoolId,
+          Logins: {
+            'login.loginns': `${username}_${cognitoId}`,
+          },
+        };
+        cognito.getOpenIdTokenForDeveloperIdentity(tokenParams, (tokenErr, tokenData) => {
+          if (tokenErr) {
+            context.fail('Internal Error: Failed to get open ID token.');
+            return;
+          }
+          const cogParams = {
+            IdentityIdsToDelete: [
+              tokenData.IdentityId,
+            ],
           };
-          cognito.getOpenIdTokenForDeveloperIdentity(tokenParams, (tokenErr, tokenData) => {
-            if (tokenErr) {
-              context.fail('Internal Error: Failed to get open ID token.');
+          cognito.deleteIdentities(cogParams, (cogErr) => {
+            if (cogErr) {
+              context.fail('Internal Error: Failed to delete user identity.');
               return;
             }
-            const cogParams = {
-              IdentityIdsToDelete: [
-                tokenData.IdentityId,
-              ],
-            };
-            cognito.deleteIdentities(cogParams, (cogErr) => {
-              if (cogErr) {
-                context.fail('Internal Error: Failed to delete user identity.');
-                return;
-              }
-              context.succeed({
-                username,
-                service: event.service,
-              });
+            context.succeed({
+              username,
+              service: event.service,
             });
           });
-        }
-        context.succeed({
-          username,
-          service: event.service,
         });
       });
     } else {

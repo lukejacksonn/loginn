@@ -16,7 +16,7 @@ const postmarkToken = '14b8a15b-a365-4fbf-9b4f-682fc9534d86';
 describe('loginn', function() {
   const username = 'testuser';
   const password = 'salted_hash';
-  const service = 'http://github.com';
+  const service = 'https://somesite.com';
   var token = '';
   var verificationToken = '';
   var passwordToken = '';
@@ -104,6 +104,7 @@ describe('loginn', function() {
           res.body.should.be.instanceof(Object);
           res.body.should.have.property('username');
           res.body.should.have.property('token');
+          res.body.should.have.property('service');
           token = res.body.token;
           done();
         });
@@ -128,6 +129,7 @@ describe('loginn', function() {
           res.status.should.be.equal(200);
           res.body.should.be.instanceof(Object);
           res.body.should.have.property('username');
+          res.body.should.have.property('service');
           done();
         });
       });

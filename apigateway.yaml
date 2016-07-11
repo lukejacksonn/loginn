@@ -41,6 +41,10 @@ paths:
             statusCode: "400"
             responseParameters:
               method.response.header.Access-Control-Allow-Origin: "'*'"
+          "Unauthorized: .*":
+            statusCode: "401"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
           "Not Found: .*":
             statusCode: "404"
             responseParameters:
@@ -63,6 +67,13 @@ paths:
               type: "string"
         400:
           description: "Bad Request"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: "Unauthorized"
           headers:
             Access-Control-Allow-Origin:
               type: "string"
@@ -845,6 +856,9 @@ definitions:
       token:
         type: string
         description: Authenticated JWT for 15 mins
+      service:
+        type: string
+        description: The website to be authenticated
   ChangePassword:
     properties:
       username:
@@ -896,6 +910,9 @@ definitions:
       username:
         type: string
         description: Username for the validated user
+      service:
+        type: string
+        description: The website to validate
   VerifyEmail:
     properties:
       username:
