@@ -5,9 +5,9 @@ info:
   title: Loginn
   description: A set of API gateway definitions to aid authentication
 host: execute-api.eu-west-1.amazonaws.com
-basePath: "/"
+basePath: /
 schemes:
-  - "https"
+  - https
 produces:
   - application/json
 paths:
@@ -20,10 +20,12 @@ paths:
         - application/json
       produces:
         - application/json
+      tags:
+        - Resources
       parameters:
-        - name: AuthenticateUser
+        - name: authenticateUser
           in: body
-          description: User details.
+          description: User details
           schema:
             $ref: '#/definitions/AuthenticateUser'
       x-amazon-apigateway-auth:
@@ -59,7 +61,7 @@ paths:
               method.response.header.Access-Control-Allow-Origin: "'*'"
       responses:
         200:
-          description: "200 response"
+          description: The authenticated user details and JWT
           schema:
             $ref: "#/definitions/AuthenticateUserResponse"
           headers:
@@ -148,6 +150,8 @@ paths:
         - application/json
       produces:
         - application/json
+      tags:
+        - Resources
       parameters:
         - name: ChangePassword
           in: body
@@ -179,7 +183,7 @@ paths:
               method.response.header.Access-Control-Allow-Origin: "'*'"
       responses:
         200:
-          description: "The username and service password was changed for"
+          description: The user details the password was changed for
           headers:
             Access-Control-Allow-Origin:
               type: "string"
@@ -254,10 +258,12 @@ paths:
         - application/json
       produces:
         - application/json
+      tags:
+        - Resources
       parameters:
         - name: NewPassword
           in: body
-          description: User details.
+          description: User details
           schema:
             $ref: '#/definitions/NewPassword'
       x-amazon-apigateway-auth:
@@ -281,7 +287,7 @@ paths:
               method.response.header.Access-Control-Allow-Origin: "'*'"
       responses:
         200:
-          description: "The username and service of password to be changed"
+          description: The user details the change password request was sent to
           headers:
             Access-Control-Allow-Origin:
               type: "string"
@@ -357,6 +363,8 @@ paths:
         - application/json
       produces:
         - application/json
+      tags:
+        - Resources
       parameters:
         - name: RegisterUser
           in: body
@@ -388,7 +396,7 @@ paths:
               method.response.header.Access-Control-Allow-Origin: "'*'"
       responses:
         200:
-          description: "The username, email and service to be registerd"
+          description: The registered user details
           headers:
             Access-Control-Allow-Origin:
               type: "string"
@@ -463,6 +471,8 @@ paths:
         - application/json
       produces:
         - application/json
+      tags:
+        - Resources
       parameters:
         - name: ValidateUser
           in: body
@@ -498,7 +508,7 @@ paths:
               method.response.header.Access-Control-Allow-Origin: "'*'"
       responses:
         200:
-          description: "The username of validated user"
+          description: The user details and JWT of validated user
           headers:
             Access-Control-Allow-Origin:
               type: "string"
@@ -581,15 +591,17 @@ paths:
         - application/json
       produces:
         - application/json
+      tags:
+        - Resources
       parameters:
-        - name: "token"
-          in: "query"
+        - name: token
+          in: query
           required: true
-          type: "string"
-        - name: "username"
-          in: "query"
+          type: string
+        - name: username
+          in: query
           required: true
-          type: "string"
+          type: string
       x-amazon-apigateway-auth:
         type: none
       x-amazon-apigateway-integration:
@@ -701,10 +713,12 @@ paths:
         - application/json
       produces:
         - application/json
+      tags:
+        - Resources
       parameters:
         - name: DeleteUser
           in: body
-          description: User and JWT
+          description: User details and JWT
           schema:
             $ref: '#/definitions/DeleteUser'
       x-amazon-apigateway-auth:
@@ -831,9 +845,9 @@ definitions:
       username:
         type: string
         description: The registered username
-      password:
+      email:
         type: string
-        description: A password for the registered user
+        description: The email address of the new user
       service:
         type: string
         description: The website to be registered
@@ -841,10 +855,10 @@ definitions:
     properties:
       username:
         type: string
-        description: A unique username for the user
+        description: Username to authenticate
       password:
         type: string
-        description: A password for the user
+        description: Password to authenticate
       service:
         type: string
         description: The website to be authenticated
@@ -858,12 +872,12 @@ definitions:
         description: Authenticated JWT for 15 mins
       service:
         type: string
-        description: The website to be authenticated
+        description: The authenticated website
   ChangePassword:
     properties:
       username:
         type: string
-        description: A unique username for the user
+        description: Username of user to change password
       password:
         type: string
         description: A new password for the user
@@ -874,7 +888,7 @@ definitions:
     properties:
       username:
         type: string
-        description: The username of the new user
+        description: The username the password was changed for
       service:
         type: string
         description: The website the password was changed for
@@ -882,7 +896,7 @@ definitions:
     properties:
       username:
         type: string
-        description: A unique username for the user
+        description: The username to request a new password for
       service:
         type: string
         description: The website of password to be changed for
@@ -890,7 +904,7 @@ definitions:
     properties:
       username:
         type: string
-        description: The username of the user
+        description: Username of the requested password change
       service:
         type: string
         description: The website of password to be changed
@@ -898,7 +912,7 @@ definitions:
     properties:
       username:
         type: string
-        description: A unique username for the user
+        description: Username of user to be validated
       token:
         type: string
         description: JWT to validate
@@ -917,7 +931,7 @@ definitions:
     properties:
       username:
         type: string
-        description: A unique username for the user
+        description: Username of user to be verified
       token:
         type: string
         description: Verification token for registration
@@ -930,13 +944,13 @@ definitions:
     properties:
       username:
         type: string
-        description: A unique username for the user
+        description: Username of user to be deleted
       password:
         type: string
-        description: A password for the user
+        description: Password for the user to be deleted
       service:
         type: string
-        description: The website to be authenticated
+        description: The website associated with user
   DeleteUserResponse:
     properties:
       username:
