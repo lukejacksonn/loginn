@@ -38,7 +38,7 @@ describe('loginn', function() {
       res.body.should.have.property('service');
       res.body.should.have.property('email');
       console.log('    Waiting for registration email..');
-      sleep.sleep(10);  // wait until email arrives
+      sleep.sleep(20);  // wait until email arrives
       request(postmarkURL)
       .get('/messages/inbound?count=1&offset=0')
       .set('Accept', 'application/json')
@@ -165,7 +165,7 @@ describe('loginn', function() {
     describe('testChangePassword', function() {
       it('should return successfully with correct parameters', function(done) {
         console.log('    Waiting for change password email..');
-        sleep.sleep(10);  // wait for email to arrive
+        sleep.sleep(20);  // wait for email to arrive
         request(postmarkURL)
         .get('/messages/inbound?count=1&offset=0')
         .set('Accept', 'application/json')
@@ -204,6 +204,31 @@ describe('loginn', function() {
               done();
             });
           });
+        });
+      });
+    });
+  });
+  /*
+   * Test that we can refresh a token
+   */
+  describe('refreshToken', function() {
+    describe('testRefreshToken', function() {
+      it('should return successfully with correct parameters', function(done) {
+        const params = { username, token, service };
+        token.should.not.be.equal('');
+        request(baseURL)
+        .post('/refresh')
+        .send(params)
+        .end((err, res) => {
+          if (err) {
+            throw err;
+          }
+          res.status.should.be.equal(200);
+          res.body.should.be.instanceof(Object);
+          res.body.should.have.property('username');
+          res.body.should.have.property('service');
+          res.body.should.have.property('token');
+          done();
         });
       });
     });

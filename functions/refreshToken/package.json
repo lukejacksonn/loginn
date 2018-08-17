@@ -1,0 +1,13 @@
+{
+  "name": "refreshToken",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "cd ../../ && apex invoke refreshToken < functions/refreshToken/event.json && cd functions/refreshToken",
+    "deploy": "cd ../../ && apex deploy && cd functions/refreshToken"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^7.0.1"
+  }
+}
